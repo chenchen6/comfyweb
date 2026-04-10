@@ -19,7 +19,7 @@ class DrawRequest(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def read_index():
-    # 讀取你的 HTML 檔案內容
+    # 讀取HTML 檔案內容
     with open(HTML_PATH, "r", encoding="utf-8") as f:
         return f.read()
 
@@ -28,10 +28,8 @@ def draw_image(request: DrawRequest):
     with open(WORKFLOW_PATH, "r", encoding="utf-8") as f:
         workflow = json.load(f)
 
-    # 更全面的檢查邏輯
     node_id = "13"
     if node_id in workflow:
-        # 直接賦值，不進行多餘的 if 檢查
         workflow[node_id]["inputs"]["value"] = request.prompt_text
         print(f">>> [確認修改] 節點 #{node_id} 的內容已變更為: {request.prompt_text}")
     else:
@@ -67,7 +65,6 @@ def check_status(prompt_id: str):
 @app.get("/get-image/{filename}")
 def get_processed_image(filename: str):
     import os
-    # 確保 filename 沒有多餘的空白
     file_path = os.path.join(COMFY_OUTPUT_PATH, filename.strip())
     
     # 診斷用：如果找不到圖，在終端機印出路徑
