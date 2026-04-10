@@ -37,3 +37,20 @@ comfyweb/
 狀態同步：前端自動與後端通訊，追蹤該任務的執行狀態。
 
 結果展示：一旦確認完成，系統自動加載生成的影像至網頁中央。
+
+### 配置 ComfyUI
+啟動ComfyUI（default為 http://127.0.0.1:8188）
+
+環境
+```
+pip install fastapi uvicorn requests
+```
+
+### 展示
+sample/1
+
+![1](https://github.com/chenchen6/comfyui-webui-test/blob/main/sample/1.gif)
+
+sample/2
+
+![2](https://github.com/chenchen6/comfyui-webui-test/blob/main/sample/2.gif)
