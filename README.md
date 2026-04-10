@@ -54,8 +54,15 @@ comfyweb/
 pip install fastapi uvicorn requests
 ```
 ### 運行專案
-`uvicorn comfyui_fastapi:app --reload`
-造訪 http://127.0.0.1:8000
+* CMD 進入conda環境
+  執行`uvicorn comfyui_fastapi:app --reload`，造訪 `http://127.0.0.1:8000`
+
+* 開啟ComfyUI，主要查看log追蹤進度，以及查看報錯
+  
+* output位置
+  在`comfyui_fastapi.py`中`COMFY_OUTPUT_PATH = r"C:/UserPath/ComfyUI/output"`
+
+記得更換成自身ComfyUI/output的PATH
 
 ### 展示
 sample/1
