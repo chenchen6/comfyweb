@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WORKFLOW_PATH = os.path.join(BASE_DIR, "workflows", "fastapi_api.json")
 COMFY_API_URL = "http://127.0.0.1:8188/prompt"
 HTML_PATH = os.path.join(BASE_DIR, "frontend", "index.html")
-COMFY_OUTPUT_PATH = r"C:/Users/zivchen/ComfyUI/output"
+COMFY_OUTPUT_PATH = r"C:/UserPath/ComfyUI/output"
 
 class DrawRequest(BaseModel):
     prompt_text: str
