@@ -49,12 +49,13 @@ comfyweb/
 ### 配置 ComfyUI
 啟動ComfyUI（default為 http://127.0.0.1:8188）
 
-環境
-
-測試時為`/fast_api python=3.12`，安裝在comfyweb原生目錄內
+環境測試時為`/fast_api python=3.12`，安裝在comfyweb原生目錄內
 ```
 pip install fastapi uvicorn requests
 ```
+### 運行專案
+`uvicorn comfyui_fastapi:app --reload`
+造訪 http://127.0.0.1:8000
 
 ### 展示
 sample/1
