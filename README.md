@@ -28,7 +28,7 @@ comfyweb/
 │   └── index.html         # 網頁控制台介面
 ├── workflows/
 │   └── fastapi_api.json   # 匯出的 ComfyUI 工作流 (API 格式)
-└── comfyweb.py            # FastAPI 後端主程式
+└── comfyui_fastapi.py            # FastAPI 後端主程式
 ```
 
 使用模型為
