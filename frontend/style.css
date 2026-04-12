@@ -1,0 +1,151 @@
+/* --- 基礎背景設定 --- */
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    padding: 40px; 
+    text-align: center; 
+    background-color: #f4f4f9; 
+    margin: 0;
+}
+
+.container { 
+    background: white; 
+    padding: 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    display: inline-block; 
+    width: 90%;
+    max-width: 600px; /* 限制最大寬度，避免跑版 */
+}
+
+h1 { 
+    color: #333; 
+    margin: 20px 0;
+}
+
+.workflow-selector {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #eef2f7;
+    border-radius: 8px;
+}
+
+#workflowSelect {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* --- 標籤切換按鈕區域 --- */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0; /* 讓按鈕連在一起 */
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    padding: 12px 30px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 16px;
+    font-weight: bold;
+    color: #888;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.tab-btn.active {
+    color: #4A90E2;
+    border-bottom: 3px solid #4A90E2; /* 選中時的底部藍線 */
+}
+
+.tab-btn:hover {
+    background-color: #f8faff;
+}
+
+/* --- 內容區塊顯示/隱藏核心邏輯 --- */
+.tab-content {
+    display: none; /* 平時全部隱藏 */
+}
+
+.tab-content.active {
+    display: flex; /* 啟動後改為 Flex 排版讓內部垂直居中 */
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- 輸入框與按鈕樣式 --- */
+.input-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+input[type="text"] { 
+    width: 80%; 
+    padding: 12px; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    outline: none; 
+    font-size: 14px;
+}
+
+input[type="file"] {
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px dashed #ccc;
+    width: 80%;
+    cursor: pointer;
+}
+
+button { 
+    padding: 12px 40px; 
+    background-color: #4A90E2; 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold;
+    font-size: 16px;
+    transition: 0.3s; 
+}
+
+button:hover { 
+    background-color: #357ABD; 
+    transform: translateY(-2px);
+}
+
+/* --- 狀態與圖片預覽 --- */
+.status-box { 
+    margin-top: 20px; 
+    font-weight: bold; 
+    color: #666; 
+    min-height: 24px;
+}
+
+.result-img { 
+    margin-top: 25px; 
+    max-width: 100%; 
+    height: auto;
+    border-radius: 8px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+    display: none; /* 沒圖片時不佔空間 */
+}
+
+.loading-spinner { 
+    color: #4A90E2; 
+    font-style: italic;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}

@@ -2,84 +2,46 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ComfyUI 控制台</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; text-align: center; background-color: #f4f4f9; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: inline-block; min-width: 400px; }
-        h1 { color: #333; }
-        input { width: 300px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
-        button { padding: 12px 24px; background-color: #4A90E2; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        button:hover { background-color: #357ABD; }
-        #status { margin-top: 20px; font-weight: bold; color: #666; }
-        #resultImage { margin-top: 20px; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: none; margin-left: auto; margin-right: auto; }
-        .loading-spinner { color: #4A90E2; font-style: italic; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 't2i')">t2i</button>
+            <button class="tab-btn" onclick="switchTab(event, 'i2i')">i2i</button>
+        </div>
+
         <h1>AI 繪圖實驗室</h1>
-        <input type="text" id="promptInput" placeholder="輸入想畫的畫面 (例如: 2.5D semi-realistic anime style)">
-        <button onclick="sendPrompt()">開始生成</button>
         
-        <div id="status">準備就緒</div>
-        <img id="resultImage" src="" alt="生成的圖片">
+        <div class="workflow-selector">
+            <label for="workflowSelect">選擇工作流：</label>
+            <select id="workflowSelect">
+                <option value="">載入中...</option>
+            </select>
+        </div>
+
+        <div id="t2i-tab-content" class="tab-content active">
+            <div class="input-group">
+                <input type="text" id="promptInputT2i" placeholder="描述想畫的畫面 (例如: 一枝鉛筆)">
+                <button onclick="sendPromptT2i()">開始生成</button>
+            </div>
+            <div id="statusT2i" class="status-box">準備就緒</div>
+            <img id="resultImageT2i" class="result-img" src="" alt="生成的圖片">
+        </div>
+
+        <div id="i2i-tab-content" class="tab-content">
+            <div class="input-group">
+                <input type="file" id="imageInputI2i" accept="image/*" onchange="previewImage(this)">
+                <input type="text" id="promptInputI2i" placeholder="描述你想如何修改這張圖...">
+                <button onclick="sendPromptI2i()">開始處理</button>
+            </div>
+            <div id="statusI2i" class="status-box">準備就緒</div>
+            <img id="resultImageI2i" class="result-img" src="" alt="處理後的圖片">
+        </div>
     </div>
 
-    <script>
-        async function sendPrompt() {
-            const prompt = document.getElementById('promptInput').value;
-            const status = document.getElementById('status');
-            const img = document.getElementById('resultImage');
-            
-            if (!prompt) {
-                alert("請輸入內容！");
-                return;
-            }
-
-            status.innerHTML = '<p class="loading-spinner">正在傳送指令給 ComfyUI...</p>';
-            img.style.display = 'none';
-
-            try {
-                // 1. 發送繪圖請求
-                const response = await fetch('/draw', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({prompt_text: prompt})
-                });
-                
-                const data = await response.json();
-                const promptId = data.prompt_id;
-                
-                if (!promptId) throw new Error("未取得 Prompt ID");
-
-                status.innerHTML = `<p>任務已排隊 (ID: ${promptId.substring(0,8)}...) <br> AI 正在思考中...</p>`;
-
-                // 2. 開始輪詢 (每 2 秒檢查一次狀態)
-                const checkInterval = setInterval(async () => {
-                    try {
-                        const statusRes = await fetch(`/check-status/${promptId}`);
-                        const statusData = await statusRes.json();
-
-                        if (statusData.status === "completed") {
-                            // 停止檢查
-                            clearInterval(checkInterval);
-                            status.innerHTML = '<p style="color: green;">生成成功！圖片載入中...</p>';
-                            
-                            // 3. 顯示圖片 (呼叫你寫好的 /get-image 路由)
-                            img.src = `/get-image/${statusData.filename}`;
-                            img.style.display = 'block';
-                        } else {
-                            status.innerHTML = '<p class="loading-spinner">繪製進度：運算中...</p>';
-                        }
-                    } catch (err) {
-                        console.error("輪詢出錯:", err);
-                    }
-                }, 2000);
-
-            } catch (e) {
-                status.innerHTML = '<p style="color:red;">連線失敗：' + e.message + '</p>';
-            }
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

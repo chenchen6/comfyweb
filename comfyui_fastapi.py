@@ -1,75 +1,115 @@
 import os
 import json
 import requests
-from fastapi.responses import HTMLResponse, FileResponse
-from fastapi import FastAPI
-from pydantic import BaseModel
+import random
+import base64
+from fastapi import FastAPI, File, UploadFile, Form
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-# 設定路徑
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-WORKFLOW_PATH = os.path.join(BASE_DIR, "workflows", "fastapi_api.json")
-COMFY_API_URL = "http://127.0.0.1:8188/prompt"
-HTML_PATH = os.path.join(BASE_DIR, "frontend", "index.html")
-COMFY_OUTPUT_PATH = r"C:/UserPath/ComfyUI/output"
+WORKFLOWS_DIR = os.path.join(BASE_DIR, "workflows")
+COMFY_URL = "http://127.0.0.1:8188/prompt"
 
-class DrawRequest(BaseModel):
-    prompt_text: str
+# --- 核心：查表函式 ---
+def get_workflow_config(workflow_name):
+    config_path = os.path.join(WORKFLOWS_DIR, "config.json")
+    if os.path.exists(config_path):
+        with open(config_path, "r", encoding="utf-8") as f:
+            full_config = json.load(f)
+            # 回傳該工作流的設定，若沒設定則回傳空字典
+            return full_config.get(workflow_name, {})
+    return {}
 
-@app.get("/", response_class=HTMLResponse)
-def read_index():
-    # 讀取HTML 檔案內容
-    with open(HTML_PATH, "r", encoding="utf-8") as f:
-        return f.read()
+@app.get("/list-workflows")
+def list_workflows():
+    if not os.path.exists(WORKFLOWS_DIR):
+        os.makedirs(WORKFLOWS_DIR)
+    files = [f for f in os.listdir(WORKFLOWS_DIR) if f.endswith('.json')]
+    # 過濾掉 config.json 本身，只列出工作流
+    files = [f for f in files if f != "config.json"]
+    return {"workflows": files}
 
 @app.post("/draw")
-def draw_image(request: DrawRequest):
-    with open(WORKFLOW_PATH, "r", encoding="utf-8") as f:
+async def draw(
+    workflow_name: str = Form(...),
+    prompt_text: str = Form(...),
+    file: UploadFile = File(None)
+):
+    # 1. 讀取 JSON 工作流
+    json_path = os.path.join(WORKFLOWS_DIR, workflow_name)
+    with open(json_path, "r", encoding="utf-8") as f:
         workflow = json.load(f)
 
-    node_id = "13"
-    if node_id in workflow:
-        workflow[node_id]["inputs"]["value"] = request.prompt_text
-        print(f">>> [確認修改] 節點 #{node_id} 的內容已變更為: {request.prompt_text}")
-    else:
-        print(f"!!! 找不到節點 #{node_id}")
-    
-    import random
-    workflow["2"]["inputs"]["seed"] = random.randint(1, 100000000000000)
-    
-    payload = {"prompt": workflow}
-    response = requests.post(COMFY_API_URL, json=payload)
-    print(f"ComfyUI 回應狀態: {response.status_code}")
-    return response.json()
+    # 2. 獲取該工作流專屬的孔位配置 (DB 邏輯)
+    cfg = get_workflow_config(workflow_name)
+    p_id = cfg.get("prompt_node")
+    s_id = cfg.get("seed_node")
+    i_id = cfg.get("image_node")
+
+    # 3. 注入圖片 (使用配置的 i_id)
+    if i_id and i_id in workflow and file:
+        img_data = await file.read()
+        base64_str = base64.b64encode(img_data).decode('utf-8')
+
+        log_preview = f"{base64_str[:50]} ... {base64_str[-50:]}"
+        print("-" * 30)
+        print(f"📸 圖片注入成功 (節點編號: {i_id})")
+        print(f"📊 字串總長度: {len(base64_str)} 字元")
+        print(f"📝 字串預覽: {log_preview}")
+        print("-" * 30)
+        
+        target_node = workflow[i_id]["inputs"]
+        if "string" in target_node:
+            target_node["string"] = base64_str
+        else:
+            target_node["value"] = base64_str
+        
+        print(f"成功將圖片轉換為 Base64 並注入節點 {i_id}")
+
+    # 4. 注入文字 (使用配置的 p_id)
+    if p_id and p_id in workflow:
+        # 這裡做個小相容：有些節點用 text，有些用 value
+        if "text" in workflow[p_id]["inputs"]:
+            workflow[p_id]["inputs"]["text"] = prompt_text
+        else:
+            workflow[p_id]["inputs"]["value"] = prompt_text
+
+    # 5. 注入種子 (使用配置的 s_id)
+    if s_id and s_id in workflow:
+        workflow[s_id]["inputs"]["seed"] = random.randint(1, 10**14)
+
+    # 6. 送出請求
+    res = requests.post(COMFY_URL, json={"prompt": workflow})
+    return res.json()
 
 @app.get("/check-status/{prompt_id}")
-def check_status(prompt_id: str):
-    # 向 ComfyUI 查詢歷史紀錄
+def check_status(prompt_id: str, workflow_name: str): # 這裡要多收一個參數
     history_url = f"http://127.0.0.1:8188/history/{prompt_id}"
     response = requests.get(history_url)
-    history = response.json()
 
-    # 如果歷史紀錄裡有這個 ID，代表算完了
+    if response.status_code == 200:
+        history = response.json()
+    else:
+        return {"status": "error", "msg": "ComfyUI 沒反應"}
+
     if prompt_id in history:
-        # 從 #11 號節點抓取圖片檔名
         outputs = history[prompt_id].get("outputs", {})
-        if "11" in outputs:
-            images = outputs["11"].get("images", [])
-            if images:
-                filename = images[0]["filename"]
-                return {"status": "completed", "filename": filename}
-    
+        
+        # 7. 根據配置尋找輸出孔位 (Base64 字串的位置)
+        cfg = get_workflow_config(workflow_name)
+        out_id = cfg.get("output_node", "16") # 預設為 16
+        
+        if out_id in outputs:
+            base64_data_list = outputs[out_id].get("text", [])
+            if base64_data_list:
+                return {
+                    "status": "completed", 
+                    "image_data": base64_data_list[0] 
+                }
+                
     return {"status": "processing"}
 
-@app.get("/get-image/{filename}")
-def get_processed_image(filename: str):
-    import os
-    file_path = os.path.join(COMFY_OUTPUT_PATH, filename.strip())
-    
-    # 診斷用：如果找不到圖，在終端機印出路徑
-    if not os.path.exists(file_path):
-        print(f"找不到檔案！嘗試路徑為: {file_path}")
-        return {"error": "404 Not Found"}
-
-    return FileResponse(file_path)
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")

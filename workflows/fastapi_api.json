@@ -97,7 +97,7 @@
   },
   "9": {
     "inputs": {
-      "clip_name": "qwen_3_4b.safetensors",
+      "clip_name": "z-image\\qwen_3_4b.safetensors",
       "type": "lumina2",
       "device": "default"
     },
@@ -113,19 +113,6 @@
     "class_type": "VAELoader",
     "_meta": {
       "title": "載入 VAE"
-    }
-  },
-  "11": {
-    "inputs": {
-      "filename_prefix": "ComfyUI",
-      "images": [
-        "6",
-        0
-      ]
-    },
-    "class_type": "SaveImage",
-    "_meta": {
-      "title": "儲存圖片"
     }
   },
   "12": {
@@ -147,6 +134,30 @@
     "class_type": "PrimitiveStringMultiline",
     "_meta": {
       "title": "字串（多行）"
+    }
+  },
+  "15": {
+    "inputs": {
+      "image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "easy imageToBase64",
+    "_meta": {
+      "title": "Image To Base64"
+    }
+  },
+  "16": {
+    "inputs": {
+      "anything": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "easy showAnything",
+    "_meta": {
+      "title": "Show Any"
     }
   }
 }

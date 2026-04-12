@@ -1,0 +1,271 @@
+{
+  "2": {
+    "inputs": {
+      "seed": 1078115138748842,
+      "steps": 4,
+      "cfg": 1,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "20",
+        0
+      ],
+      "positive": [
+        "17",
+        0
+      ],
+      "negative": [
+        "3",
+        0
+      ],
+      "latent_image": [
+        "7",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "3": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 文字編碼（提示詞）"
+    }
+  },
+  "4": {
+    "inputs": {
+      "text": "",
+      "clip": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP 文字編碼（提示詞）"
+    }
+  },
+  "6": {
+    "inputs": {
+      "samples": [
+        "2",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE 解碼"
+    }
+  },
+  "7": {
+    "inputs": {
+      "width": 1024,
+      "height": 1536,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "空白潛在影像"
+    }
+  },
+  "8": {
+    "inputs": {
+      "unet_name": "Qwen edit 2511\\qwen_image_edit_2511_fp8mixed.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "載入擴散模型"
+    }
+  },
+  "9": {
+    "inputs": {
+      "clip_name": "Qwen-edit\\qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "載入 CLIP"
+    }
+  },
+  "10": {
+    "inputs": {
+      "vae_name": "qwen_image_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "載入 VAE"
+    }
+  },
+  "12": {
+    "inputs": {
+      "images": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "預覽圖片"
+    }
+  },
+  "13": {
+    "inputs": {
+      "value": "將含有紫色的區域的部分改成粉紅色"
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "字串（多行）"
+    }
+  },
+  "14": {
+    "inputs": {
+      "base64_string": [
+        "25",
+        0
+      ]
+    },
+    "class_type": "Base64DecodeNode",
+    "_meta": {
+      "title": "Base64 Decode to Image"
+    }
+  },
+  "15": {
+    "inputs": {
+      "to_ref": true,
+      "ref_main_image": true,
+      "ref_longest_edge": 1536,
+      "ref_crop": "pad",
+      "ref_upscale": "lanczos",
+      "to_vl": true,
+      "vl_resize": true,
+      "vl_target_size": 384,
+      "vl_crop": "center",
+      "vl_upscale": "lanczos",
+      "image": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "QwenEditConfigPreparer",
+    "_meta": {
+      "title": "Qwen Edit Config Preparer"
+    }
+  },
+  "16": {
+    "inputs": {
+      "custom_output": [
+        "17",
+        2
+      ]
+    },
+    "class_type": "QwenEditOutputExtractor",
+    "_meta": {
+      "title": "Qwen Edit Output Extractor"
+    }
+  },
+  "17": {
+    "inputs": {
+      "prompt": [
+        "13",
+        0
+      ],
+      "return_full_refs_cond": true,
+      "instruction": "Describe the key features of the input image (color, shape, size, texture, objects, background), then explain how the user's text instruction should alter or modify the image. Generate a new image that meets the user's requirements while maintaining consistency with the original input where appropriate.",
+      "clip": [
+        "9",
+        0
+      ],
+      "vae": [
+        "10",
+        0
+      ],
+      "configs": [
+        "15",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusCustom_lrzjason",
+    "_meta": {
+      "title": "TextEncodeQwenImageEditPlusCustom lrzjason"
+    }
+  },
+  "18": {
+    "inputs": {
+      "image": [
+        "6",
+        0
+      ],
+      "pad_info": [
+        "16",
+        0
+      ]
+    },
+    "class_type": "CropWithPadInfo",
+    "_meta": {
+      "title": "Crop With Pad Info"
+    }
+  },
+  "20": {
+    "inputs": {
+      "lora_name": "Qwen\\2511\\Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "strength_model": 1,
+      "model": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoraLoaderModelOnly"
+    }
+  },
+  "21": {
+    "inputs": {
+      "image": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "easy imageToBase64",
+    "_meta": {
+      "title": "Image To Base64"
+    }
+  },
+  "22": {
+    "inputs": {
+      "anything": [
+        "21",
+        0
+      ]
+    },
+    "class_type": "easy showAnything",
+    "_meta": {
+      "title": "Show Any"
+    }
+  },
+  "25": {
+    "inputs": {
+      "String": ""
+    },
+    "class_type": "String",
+    "_meta": {
+      "title": "String"
+    }
+  }
+}
