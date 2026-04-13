@@ -24,18 +24,21 @@
 ### 專案結構
 ```
 comfyweb/
-├── frontend/
-│   └── index.html         # 網頁控制台介面
-├── workflows/
-│   └── fastapi_api.json   # 匯出的 ComfyUI 工作流 (API 格式)
-└── comfyui_fastapi.py            # FastAPI 後端主程式
+├── frontend/              # 網頁控制台介面
+│   └── index.html         
+│   └── style.css
+│   └── script.js 
+├── workflows/             # 匯出的 ComfyUI 工作流 (API 格式)
+│   └── fastapi_api.json   
+│   └── image2image.json
+└── comfyui_fastapi.py     # FastAPI 後端主程式
 ```
 
 使用模型為
 
-* diffusion model  :BEYOND_REALITY_ZIMAGE.safetensors
-* clip : qwen_3_4b.safetensors
-* vae : UltraFlux-v1.safetensors
+* diffusion model:BEYOND_REALITY_ZIMAGE.safetensors
+* clip:qwen_3_4b.safetensors
+* vae:UltraFlux-v1.safetensors
 
 ### 運作流程
 提交指令：使用者在網頁端輸入提詞。
@@ -46,10 +49,11 @@ comfyweb/
 
 結果展示：一旦確認完成，系統自動加載生成的影像至網頁中央。
 
-### 配置 ComfyUI
+### 配置與運行
 啟動ComfyUI（default為 http://127.0.0.1:8188）
 
-環境測試時為`/fast_api python=3.12`，安裝在comfyweb原生目錄內
+虛擬環境測試時為`/fast_api python=3.1X(依據想要的版本)`，安裝在comfyweb原生目錄內，亦可安裝至本地環境
+
 ```
 pip install fastapi uvicorn requests
 ```
