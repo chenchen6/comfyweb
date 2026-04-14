@@ -1,6 +1,7 @@
-fast_api/
+.env
 .vscode/
 __pycache__/
 .DS_Store
 Thumbs.db
-/output/
+input/
+temp_images/

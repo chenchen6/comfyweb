@@ -42,19 +42,6 @@
       "title": "CLIP 文字編碼（提示詞）"
     }
   },
-  "4": {
-    "inputs": {
-      "text": "",
-      "clip": [
-        "9",
-        0
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP 文字編碼（提示詞）"
-    }
-  },
   "6": {
     "inputs": {
       "samples": [
@@ -84,7 +71,7 @@
   },
   "8": {
     "inputs": {
-      "unet_name": "Qwen edit 2511\\qwen_image_edit_2511_fp8mixed.safetensors",
+      "unet_name": "qwen_image_edit_2511_fp8mixed.safetensors",
       "weight_dtype": "default"
     },
     "class_type": "UNETLoader",
@@ -94,7 +81,7 @@
   },
   "9": {
     "inputs": {
-      "clip_name": "Qwen-edit\\qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
       "type": "qwen_image",
       "device": "default"
     },
@@ -133,18 +120,6 @@
       "title": "字串（多行）"
     }
   },
-  "14": {
-    "inputs": {
-      "base64_string": [
-        "25",
-        0
-      ]
-    },
-    "class_type": "Base64DecodeNode",
-    "_meta": {
-      "title": "Base64 Decode to Image"
-    }
-  },
   "15": {
     "inputs": {
       "to_ref": true,
@@ -158,7 +133,7 @@
       "vl_crop": "center",
       "vl_upscale": "lanczos",
       "image": [
-        "14",
+        "26",
         0
       ]
     },
@@ -223,7 +198,7 @@
   },
   "20": {
     "inputs": {
-      "lora_name": "Qwen\\2511\\Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "lora_name": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
       "strength_model": 1,
       "model": [
         "8",
@@ -259,13 +234,13 @@
       "title": "Show Any"
     }
   },
-  "25": {
+  "26": {
     "inputs": {
-      "String": ""
+      "image": "example.png"
     },
-    "class_type": "String",
+    "class_type": "LoadImage",
     "_meta": {
-      "title": "String"
+      "title": "加载图像"
     }
   }
 }

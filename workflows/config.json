@@ -1,0 +1,31 @@
+{
+  "settings": {
+    "target_dirs": ["diffusion_models", "checkpoints", "clip", "vae", "loras", "text_encoders"]
+  },
+  
+  "workflows": {
+    "text2image.json": {
+      "prompt_node": "13",
+      "seed_node": "2",
+      "image_node": null,
+      "output_node": "16",
+      "models": {
+        "8": "z-image\\BEYOND_REALITY_ZIMAGE_FP8.safetensors",
+        "9": "qwen_3_4b.safetensors",
+        "10": "UltraFlux-v1.safetensors"
+      }
+    },
+    "image2image.json": {
+      "prompt_node": "13",
+      "seed_node": "2",
+      "image_node": "26",
+      "output_node": "22",
+      "models": {
+        "8": "qwen_image_edit_2511_fp8mixed.safetensors",
+        "9": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+        "10": "qwen_image_vae.safetensors",
+        "20": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors"
+      }
+    }
+  }
+}
