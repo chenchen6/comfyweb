@@ -46,7 +46,7 @@ comfyweb/
 │   └── style.css
 │   └── scripts.js
 ├── workflows/              # 匯出的 ComfyUI 工作流
-│   └── config.json         #設定你工作流節點ID
+│   └── config.json         # 設定你工作流節點ID
 │   └── text2image.json   
 │   └── image2image.json
 ├── base.py
