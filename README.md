@@ -19,6 +19,12 @@
     * 實現邏輯與配置分離，使用者僅需將新的 JSON 放入 `workflows` 資料夾，並在 `config.json` 註冊節點 ID 即可快速擴充功能。
     * 支援動態載入工作流清單，前端可自動更新選項。
 
+### i2i展示
+
+![i2i-1](https://github.com/chenchen6/comfyweb/blob/t2i_i2i/sample/i2i-1.gif)
+
+![i2i-2](https://github.com/chenchen6/comfyweb/blob/t2i_i2i/sample/i2i-2.gif)
+
 ### 核心特色
 即時進度追蹤：內建自動化狀態監測，無需手動整理，系統將自動偵測繪圖進度並完成顯示。
 
@@ -34,8 +40,6 @@
 * Backend: Python 3.10+, FastAPI, Uvicorn
 * Frontend: JavaScript, HTML, CSS
 * 核心整合: ComfyUI API 端口
-
-
 
 ### 專案結構
 ```
