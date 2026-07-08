@@ -1,7 +1,7 @@
 # ComfyUI-Web-Controller AI 繪圖實驗室
 一個基於 FastAPI 的輕量化網頁控制台，將 ComfyUI 的強大 AI 算圖能力透過 API 轉化為直觀的 Web 介面
 
-套件環境裝在comfyweb資料夾內，ComfyUI預設127.0.0.1:8188，可於本地直接運行
+套件環境使用conda(anaconda/miniconda)，裝在comfyweb資料夾內，ComfyUI預設127.0.0.1:8188，可於本地直接運行
 
 ### 2026/04/14更新內容
 本次更新針對系統架構進行了大規模重構，提升了程式碼的可維護性與擴充性：
@@ -54,7 +54,8 @@ comfyweb/
 │   └── text2image.json   
 │   └── image2image.json
 ├── base.py
-├── processors.py 
+├── processors.py
+├── requirements.txt 
 └── main.py                 # FastAPI 後端主程式
 
 ```
@@ -89,6 +90,8 @@ I2I workflow:
 
 ```
 pip install fastapi uvicorn requests
+或是
+pip install -r requirements.txt
 ```
 ### 運行專案
 
